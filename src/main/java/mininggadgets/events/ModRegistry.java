@@ -2,6 +2,7 @@ package mininggadgets.events;
 
 import mininggadgets.MiningGadgets;
 import mininggadgets.init.MGContent;
+import mininggadgets.items.MiningGadget;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import reborncore.RebornRegistry;
