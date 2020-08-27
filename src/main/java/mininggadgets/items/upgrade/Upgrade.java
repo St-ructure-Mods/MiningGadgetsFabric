@@ -3,11 +3,40 @@ package mininggadgets.items.upgrade;
 import java.util.function.Supplier;
 
 import mininggadgets.MiningGadgets;
+import mininggadgets.config.MGConfig;
 import mininggadgets.items.UpgradeCard;
 import net.minecraft.item.ItemStack;
 
 public enum Upgrade {
-    EMPTY("empty", () -> 0, false);
+    //Blank
+    EMPTY("empty", () -> 0, false),
+
+    SILK("silk", () -> MGConfig.UPGRADECOST_SILKTOUCH, true),
+    VOID_JUNK("void_junk", () -> MGConfig.UPGRADECOST_VOID),
+    MAGNET("magnet", () -> MGConfig.UPGRADECOST_MAGNET),
+    FREEZING("freezing", () -> 0),
+    THREE_BY_THREE("three_by_three", () -> 0, false),
+    LIGHT_PLACER("light_placer", () -> 0),
+    PAVER("paver", () -> 10),
+
+    // Tiered
+    FORTUNE_1("fortune_1", 1, () -> MGConfig.UPGRADECOST_FORTUNE1, true),
+    FORTUNE_2("fortune_2", 2, () -> MGConfig.UPGRADECOST_FORTUNE2, true),
+    FORTUNE_3("fortune_3", 3, () -> MGConfig.UPGRADECOST_FORTUNE3, true),
+
+    BATTERY_1("battery_1", 1, () -> 0),
+    BATTERY_2("battery_2", 2, () -> 0),
+    BATTERY_3("battery_3", 3, () -> 0),
+
+    RANGE_1("range_1", 1, () -> 0),
+    RANGE_2("range_2", 2, () -> 0),
+    RANGE_3("range_3", 3, () -> 0),
+
+    EFFICIENCY_1("efficiency_1", 1, () -> MGConfig.UPGRADECOST_EFFICIENCY1, true),
+    EFFICIENCY_2("efficiency_2", 2, () -> MGConfig.UPGRADECOST_EFFICIENCY2, true),
+    EFFICIENCY_3("efficiency_3", 3, () -> MGConfig.UPGRADECOST_EFFICIENCY3, true),
+    EFFICIENCY_4("efficiency_4", 4, () -> MGConfig.UPGRADECOST_EFFICIENCY4, true),
+    EFFICIENCY_5("efficiency_5", 5, () -> MGConfig.UPGRADECOST_EFFICIENCY5, true);
 
     private final String name;
     private final String baseName;

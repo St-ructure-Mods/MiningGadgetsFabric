@@ -13,8 +13,8 @@
     "sources": "https://github.com/FabricMC/fabric-example-mod"
   },
 
-  "license": "CC0-1.0",
-  "icon": "assets/mininggadgets/icon.png",
+  "license": "MIT",
+  "icon": "mininggadgets-logo.png",
 
   "environment": "*",
   "entrypoints": {

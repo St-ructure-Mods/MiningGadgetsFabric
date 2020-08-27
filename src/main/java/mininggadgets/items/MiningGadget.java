@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Random;
 
 import mininggadgets.MiningGadgets;
+import mininggadgets.client.OurKeys;
+import mininggadgets.client.screens.ModScreens;
 import mininggadgets.config.MGConfig;
 import mininggadgets.init.InitUtils;
 import mininggadgets.items.gadget.MiningProperties;
@@ -12,10 +14,12 @@ import mininggadgets.items.upgrade.UpgradeTools;
 import mininggadgets.util.MagicHelpers;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -24,7 +28,12 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.UseAction;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.util.ItemDurabilityExtensions;
@@ -89,7 +98,11 @@ public class MiningGadget extends Item implements EnergyHolder, ItemDurabilityEx
 
     @Override
     public boolean showDurability(ItemStack stack) {
-        return true;
+        if (stack.getItem() instanceof MiningGadget) {
+            return Energy.of(stack).getEnergy() > 0;
+        }
+
+        return false;
     }
 
     @Override
@@ -102,6 +115,7 @@ public class MiningGadget extends Item implements EnergyHolder, ItemDurabilityEx
         return 0;
     }
 
+    @Environment(EnvType.CLIENT)
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
         super.appendTooltip(stack, world, tooltip, context);
@@ -153,6 +167,62 @@ public class MiningGadget extends Item implements EnergyHolder, ItemDurabilityEx
             cost = cost * 9;
 
         return energy.getEnergy() > cost;
+    }
+
+    public static boolean canMineBlock(ItemStack tool, World world, PlayerEntity player, BlockPos pos, BlockState state) {
+        if (!player.canModifyBlocks() || !world.canPlayerModifyAt(player, pos))
+            return false;
+
+        return canMine(tool);
+    }
+
+    @Override
+    public UseAction getUseAction(ItemStack stack) {
+        return UseAction.NONE;
+    }
+
+    @Override
+    public int getMaxUseTime(ItemStack stack) {
+        return 72000;
+    }
+
+    @Environment(EnvType.CLIENT)
+    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        ItemStack itemStack = player.getStackInHand(hand);
+
+        if (player.isSneaking()) {
+            return this.onItemShiftRightClick(world, player, hand, itemStack);
+        }
+
+        if (world.isClient) {
+            float volume = MiningProperties.getVolume(itemStack);
+            if (volume != 0.0f) {
+//                player.playSound(OurSounds.LASER_START.getSound(), volume * 0.5f, 1f);
+            }
+
+            return new TypedActionResult<>(ActionResult.PASS, itemStack);
+        }
+
+        if (!canMine(itemStack)) {
+            return new TypedActionResult<>(ActionResult.FAIL, itemStack);
+        }
+
+        player.setCurrentHand(hand);
+        return new TypedActionResult<>(ActionResult.PASS, itemStack);
+    }
+
+    @Environment(EnvType.CLIENT)
+    private TypedActionResult<ItemStack> onItemShiftRightClick(World world, PlayerEntity player, Hand hand, ItemStack itemstack) {
+        if (!world.isClient)
+            MiningProperties.setCanMine(itemstack, true);
+
+        if (world.isClient) {
+            if (OurKeys.shiftClickGuiBinding.getDefaultKey() == InputUtil.UNKNOWN_KEY) {
+                ModScreens.openGadgetSettingsScreen(itemstack);
+            }
+        }
+
+        return new TypedActionResult<>(ActionResult.SUCCESS, itemstack);
     }
 
     public static int getEnergyCost(ItemStack stack) {

@@ -15,7 +15,7 @@ public class ModRegistry {
 
 
     private static void registerItems() {
-        RebornRegistry.registerItem(MGContent.MINING_GADGET = setup(new MiningGadget(), "mining_gadet"));
+        RebornRegistry.registerItem(MGContent.MINING_GADGET = setup(new MiningGadget(), "mininggadget"));
     }
 
     private static <I extends Item> I setup(I item, String name) {

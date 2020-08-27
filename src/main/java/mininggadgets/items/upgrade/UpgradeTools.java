@@ -2,11 +2,14 @@ package mininggadgets.items.upgrade;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import mininggadgets.items.UpgradeCard;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 public class UpgradeTools {
     private static final String KEY_UPGRADES = "upgrades";
@@ -106,5 +109,22 @@ public class UpgradeTools {
         }
 
         return functionalUpgrades;
+    }
+
+    public static Optional<Upgrade> getUpgradeFromList(List<Upgrade> upgrades, Upgrade type) {
+        if( upgrades == null || upgrades.isEmpty() )
+            return Optional.empty();
+
+        return upgrades.stream()
+                .filter(upgrade -> upgrade.getBaseName().equals(type.getBaseName()))
+                .findFirst();
+    }
+
+    public static boolean containsUpgradeFromList(List<Upgrade> upgrades, Upgrade type) {
+        return getUpgradeFromList(upgrades, type).isPresent();
+    }
+
+    public static Text getName(Upgrade upgrade) {
+        return new LiteralText("TEST");
     }
 }

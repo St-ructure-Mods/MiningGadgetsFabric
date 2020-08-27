@@ -25,7 +25,7 @@
   "item.mininggadgets.upgrade_silk": "Улучшение: Шелковое касание",
   "item.mininggadgets.upgrade_three_by_three": "Улучшение: 3x3",
   "item.mininggadgets.upgrade_void_junk": "Улучшение: Пустотная мусорка",
-  "itemGroup.mininggadgets": "Mining Gadgets",
+  "itemGroup.mininggadgets.item_group": "Mining Gadgets",
   "mininggadgets.gadget.energy": "Энергия: %d/%d",
   "mininggadgets.gadget.range_change": "Изменение диапазона: %1$d x %1$d",
   "mininggadgets.tooltip.item.battery_boost": "Усиление аккумулятора: %1$d",
