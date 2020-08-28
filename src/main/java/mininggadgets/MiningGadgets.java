@@ -28,6 +28,10 @@ public class MiningGadgets implements ModInitializer {
         INSTANCE = this;
         new Configuration(MGConfig.class, MOD_ID);
 
+//        ServerTickEvents.END_SERVER_TICK.register(ServerTickHandler::serverTickEvent);
+
         ModRegistry.setup();
     }
+
+
 }

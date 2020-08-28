@@ -120,6 +120,25 @@ public class UpgradeTools {
                 .findFirst();
     }
 
+    public static Optional<Upgrade> getUpgradeFromGadget(ItemStack tool, Upgrade type) {
+        List<Upgrade> upgrades = getUpgrades(tool);
+        return getUpgradeFromList(upgrades, type);
+    }
+
+    public static boolean containsUpgrade(ItemStack tool, Upgrade type) {
+        return getUpgradeFromGadget(tool, type).isPresent();
+    }
+
+    public static boolean containsActiveUpgrade(ItemStack tool, Upgrade type) {
+        Optional<Upgrade> upgrade = getUpgradeFromGadget(tool, type);
+        return upgrade.isPresent() && upgrade.get().isEnabled();
+    }
+
+    public static boolean containsActiveUpgradeFromList(List<Upgrade> upgrades, Upgrade type) {
+        Optional<Upgrade> upgrade = getUpgradeFromList(upgrades, type);
+        return upgrade.isPresent() && upgrade.get().isEnabled();
+    }
+
     public static boolean containsUpgradeFromList(List<Upgrade> upgrades, Upgrade type) {
         return getUpgradeFromList(upgrades, type).isPresent();
     }

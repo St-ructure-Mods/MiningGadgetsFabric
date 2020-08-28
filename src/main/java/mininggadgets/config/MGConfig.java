@@ -42,4 +42,10 @@ public class MGConfig {
 
     @Config(config = "items", category = "general", key = "miningGadgetE5Cost", comment = "Mining Gadget Efficiency 5 Cost")
     public static int UPGRADECOST_EFFICIENCY5 = 50;
+
+    @Config(config = "items", category = "general", key = "miningGadgetFreezeCost", comment = "Mining Gadget Freeze Cost")
+    public static int UPGRADECOST_FREEZE = 100;
+
+    @Config(config = "items", category = "general", key = "miningGadgetLightCost", comment = "Mining Gadget Light Cost")
+    public static int UPGRADECOST_LIGHT = 100;
 }

@@ -83,6 +83,10 @@ public enum Upgrade {
         return upgradeStack;
     }
 
+    public int getTier() {
+        return tier;
+    }
+
     public int getCostPerBlock() {
         return costPerBlock.get();
     }
