@@ -1,14 +1,19 @@
 package mininggadgets;
 
+import mininggadgets.blockentities.RenderBlockBlockEntity;
+import mininggadgets.blocks.RenderBlock;
 import mininggadgets.config.MGConfig;
 import mininggadgets.events.ModRegistry;
+import mininggadgets.init.MGBlockEntities;
 import mininggadgets.init.MGContent;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
+import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import reborncore.common.config.Configuration;
@@ -31,6 +36,9 @@ public class MiningGadgets implements ModInitializer {
 //        ServerTickEvents.END_SERVER_TICK.register(ServerTickHandler::serverTickEvent);
 
         ModRegistry.setup();
+
+        MGBlockEntities.RENDERBLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, "renderblock"), BlockEntityType.Builder.create(RenderBlockBlockEntity::new, MGContent.RENDER_BLOCK).build(null));
+
     }
 
 

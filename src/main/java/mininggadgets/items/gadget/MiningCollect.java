@@ -21,6 +21,8 @@ public class MiningCollect {
         List<BlockPos> coordinates = new ArrayList<>();
         BlockPos startPos = startBlock.getBlockPos();
 
+        System.out.println(range);
+
         if (range == 1) {
             if (!isValid(player, startBlock.getBlockPos(), world))
                 return coordinates;
@@ -70,6 +72,6 @@ public class MiningCollect {
 
 //        return !(state.getBlock() instanceof MinersLight);
 
-        return false;
+        return true;
     }
 }

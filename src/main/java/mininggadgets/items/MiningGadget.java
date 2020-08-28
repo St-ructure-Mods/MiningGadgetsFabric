@@ -161,11 +161,12 @@ public class MiningGadget extends Item implements EnergyHolder, ItemDurabilityEx
 
         if (Energy.valid(stack)) {
             int energy = (int) Energy.of(stack).getEnergy();
+            int maxEnergy = (int) Energy.of(stack).getMaxStored();
 
             tooltip.add(
                 new TranslatableText("mininggadgets.gadget.energy", 
                     MagicHelpers.tidyValue(energy),
-                    MagicHelpers.tidyValue(energy)
+                    MagicHelpers.tidyValue(maxEnergy)
                 ).setStyle(Style.EMPTY.withColor(TextColor.parse("GREEN")))
             );
         }
@@ -320,6 +321,7 @@ public class MiningGadget extends Item implements EnergyHolder, ItemDurabilityEx
 
         int range = MiningProperties.getBeamRange(stack);
         BlockHitResult lookingAt = VectorHelper.getLookingAt((PlayerEntity) player, RaycastContext.FluidHandling.NONE, range);
+
         if (lookingAt == null || (world.getBlockState(VectorHelper.getLookingAt((PlayerEntity) player, stack, range).getBlockPos()) == Blocks.AIR.getDefaultState()))
             return;
 
@@ -327,11 +329,9 @@ public class MiningGadget extends Item implements EnergyHolder, ItemDurabilityEx
 
         if (UpgradeTools.containsActiveUpgrade(stack, Upgrade.FREEZING)) {
             for (BlockPos sourcePos : findSources(player.world, coords)) {
-                if (player instanceof PlayerEntity) {
-                    int delay = MiningProperties.getFreezeDelay(stack);
-                    if (delay == 0 || count % delay == 0) {
-                        spawnFreezeParticle((PlayerEntity) player, sourcePos, player.world, stack);
-                    }
+                int delay = MiningProperties.getFreezeDelay(stack);
+                if (delay == 0 || count % delay == 0) {
+                    spawnFreezeParticle((PlayerEntity) player, sourcePos, player.world, stack);
                 }
             }
         }
@@ -345,12 +345,20 @@ public class MiningGadget extends Item implements EnergyHolder, ItemDurabilityEx
             hardness = hardness * MiningProperties.getRange(stack) * 1;
             hardness = (float) Math.floor(hardness);
             if (hardness == 0) hardness = 1;
+
+            System.out.println(coords);
+
             for (BlockPos coord : coords) {
+
+                System.out.println(coord);
+                System.out.println("HERE");
+
                 BlockState state = world.getBlockState(coord);
                 if (!(state.getBlock() instanceof RenderBlock)) {
                     if (!canMineBlock(stack, world, (PlayerEntity) player, coord, state)) {
                         return;
                     }
+
                     List<Upgrade> gadgetUpgrades = UpgradeTools.getUpgrades(stack);
                     world.setBlockState(coord, MGContent.RENDER_BLOCK.getDefaultState());
                     RenderBlockBlockEntity be = (RenderBlockBlockEntity) world.getBlockEntity(coord);

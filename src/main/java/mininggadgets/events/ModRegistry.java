@@ -15,7 +15,6 @@ public class ModRegistry {
     public static void setup() {
         registerItems();
         registerBlocks();
-        OurSounds.registerSounds();
     }
 
     private static void registerItems() {

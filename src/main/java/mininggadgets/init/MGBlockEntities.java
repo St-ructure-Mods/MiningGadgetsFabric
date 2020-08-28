@@ -19,7 +19,7 @@ public class MGBlockEntities {
 
     private static final List<BlockEntityType<?>> TYPES = new ArrayList<>();
 
-    public static final BlockEntityType<RenderBlockBlockEntity> RENDERBLOCK_ENTITY = register(RenderBlockBlockEntity::new, "render_block");
+    public static BlockEntityType<RenderBlockBlockEntity> RENDERBLOCK_ENTITY;
 
     public static <T extends BlockEntity> BlockEntityType<T> register(Supplier<T> supplier, String name, ItemConvertible... items) {
         return register(supplier, name, Arrays.stream(items).map(itemConvertible -> Block.getBlockFromItem(itemConvertible.asItem())).toArray(Block[]::new));

@@ -182,6 +182,10 @@ public class RenderBlockBlockEntity extends BlockEntity implements Tickable {
         this.playerUUID = player.getUuid();
     }
 
+    public UUID getPlayerUUID() {
+        return this.playerUUID;
+    }
+
     public int getTicksSinceMine() {
         return ticksSinceMine;
     }
@@ -246,12 +250,6 @@ public class RenderBlockBlockEntity extends BlockEntity implements Tickable {
         return toTag(new CompoundTag());
     }
 
-//    NEED FABRIC VERSION
-//    @Override
-//    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-//        read(this.getBlockState(), pkt.getNbtCompound());
-//    }
-
     public void markDirtyClient() {
         markDirty();
         if (getWorld() != null) {
@@ -295,6 +293,10 @@ public class RenderBlockBlockEntity extends BlockEntity implements Tickable {
     }
 
     private void removeBlock() {
+        System.out.println(world);
+        System.out.println(world.isClient);
+        System.out.println(playerUUID);
+
         if (world == null || world.isClient || playerUUID == null)
             return;
 

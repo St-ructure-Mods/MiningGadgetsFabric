@@ -1,7 +1,6 @@
 package mininggadgets.sounds;
 
 import mininggadgets.MiningGadgets;
-import mininggadgets.items.MiningGadget;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
