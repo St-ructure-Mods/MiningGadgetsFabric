@@ -293,10 +293,6 @@ public class RenderBlockBlockEntity extends BlockEntity implements Tickable {
     }
 
     private void removeBlock() {
-        System.out.println(world);
-        System.out.println(world.isClient);
-        System.out.println(playerUUID);
-
         if (world == null || world.isClient || playerUUID == null)
             return;
 

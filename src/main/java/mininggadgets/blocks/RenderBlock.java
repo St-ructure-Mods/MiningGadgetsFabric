@@ -14,12 +14,10 @@ import net.minecraft.world.BlockView;
 public class RenderBlock extends Block implements BlockEntityProvider {
     public RenderBlock() {
         super(
-                FabricBlockSettings.of(Material.METAL)
-                .hardness(2.0f)
-                .resistance(2.0f)
-                .noCollision()
-                .dropsNothing()
+                Settings.of(Material.METAL)
+                .strength(2.0f, 2.0f)
                 .nonOpaque()
+                .dropsNothing()
         );
     }
 

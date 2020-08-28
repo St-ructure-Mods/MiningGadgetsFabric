@@ -21,8 +21,6 @@ public class MiningCollect {
         List<BlockPos> coordinates = new ArrayList<>();
         BlockPos startPos = startBlock.getBlockPos();
 
-        System.out.println(range);
-
         if (range == 1) {
             if (!isValid(player, startBlock.getBlockPos(), world))
                 return coordinates;

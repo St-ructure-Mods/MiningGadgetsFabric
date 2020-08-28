@@ -10,5 +10,5 @@ public class MGContent {
 
     public static Block RENDER_BLOCK;
 
-    public static BlockEntityType<RenderBlockBlockEntity> RENDERBLOCK_ENTITY;
+    public static BlockEntityType<?> RENDERBLOCK_ENTITY;
 }

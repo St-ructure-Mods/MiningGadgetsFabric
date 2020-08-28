@@ -346,13 +346,7 @@ public class MiningGadget extends Item implements EnergyHolder, ItemDurabilityEx
             hardness = (float) Math.floor(hardness);
             if (hardness == 0) hardness = 1;
 
-            System.out.println(coords);
-
             for (BlockPos coord : coords) {
-
-                System.out.println(coord);
-                System.out.println("HERE");
-
                 BlockState state = world.getBlockState(coord);
                 if (!(state.getBlock() instanceof RenderBlock)) {
                     if (!canMineBlock(stack, world, (PlayerEntity) player, coord, state)) {
