@@ -28,7 +28,7 @@ public class ModRegistry {
     }
 
     private static void registerBlockEntities() {
-        MGContent.RENDERBLOCK_ENTITY = setup(BlockEntityType.Builder.create(RenderBlockBlockEntity::new, MGContent.RENDER_BLOCK).build(null), "renderblocktile");
+        MGContent.RENDERBLOCK_ENTITY = setup(BlockEntityType.Builder.create(RenderBlockBlockEntity::new, MGContent.RENDER_BLOCK).build(null), "renderblock");
     }
 
     private static <I extends Item> I setup(I item, String name) {

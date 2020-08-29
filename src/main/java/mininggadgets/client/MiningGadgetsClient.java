@@ -1,8 +1,11 @@
 package mininggadgets.client;
 
+import mininggadgets.client.renderer.RenderBlockBER;
+import mininggadgets.init.MGContent;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.minecraft.util.registry.Registry;
 
 @Environment(EnvType.CLIENT)
@@ -19,6 +22,6 @@ public class MiningGadgetsClient implements ClientModInitializer {
     }
 
     private static void registerRenderers() {
-
+        BlockEntityRendererRegistry.INSTANCE.register(MGContent.RENDERBLOCK_ENTITY, RenderBlockBER::new);
     }
 }

@@ -20,6 +20,9 @@
   "entrypoints": {
     "main": [
       "mininggadgets.MiningGadgets"
+    ],
+    "client": [
+      "mininggadgets.client.MiningGadgetsClient"
     ]
   },
   "depends": {
