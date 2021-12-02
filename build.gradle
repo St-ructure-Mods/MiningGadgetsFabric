@@ -26,6 +26,15 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	
+	// Reborn Core
+	def rcVersion = 'RebornCore:RebornCore-1.17:+'
+	modApi (rcVersion) {
+		exclude group: "net.fabricmc.fabric-api"
+	}
+	include rcVersion
+
+	modApi 'teamreborn:energy:0.1.2'
 }
 
 processResources {
