@@ -11,6 +11,8 @@ import net.minecraft.client.particle.AbstractDustParticle;
 import net.minecraft.client.particle.BlockDustParticle;
 import net.minecraft.client.particle.BlockFallingDustParticle;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tag.BlockTags;
@@ -46,7 +48,6 @@ public class LaserParticle extends BlockDustParticle {
                          float size, float red, float green, float blue, boolean depthTest, BlockState blockState, float maxAgeMul) {
         super((ClientWorld) world, x, y, z, xSpeed, ySpeed, zSpeed, blockState);
 
-
         // super applies wiggle to motion so set it here instead
         velocityX = xSpeed;
         velocityY = ySpeed;
@@ -56,7 +57,7 @@ public class LaserParticle extends BlockDustParticle {
         colorBlue = blue;
         gravityStrength = 0;
         scale *= size;
-//        moteParticleScale = particleScale;
+//        originalSize = quadSize
         maxAge = Math.round(maxAgeMul);
 //        this.depthTest = depthTest;
 
@@ -77,5 +78,7 @@ public class LaserParticle extends BlockDustParticle {
         sourceZ = z;
         this.collidesWithWorld = false;
     }
+
+
 
 }
