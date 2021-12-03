@@ -19,12 +19,12 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.stat.Stats;
-import net.minecraft.util.Tickable;
+import net.minecraft.world.level.LevelInfo;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
@@ -33,7 +33,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 
-public class RenderBlockBlockEntity extends BlockEntity implements Tickable {
+public class RenderBlockBlockEntity extends BlockEntity {
     private BlockState renderBlock;
 
     private int priorDurability = 9999;
@@ -60,8 +60,8 @@ public class RenderBlockBlockEntity extends BlockEntity implements Tickable {
         put(Blocks.NETHER_QUARTZ_ORE, Pair.of(2, 5));
     }};
 
-    public RenderBlockBlockEntity() {
-        super(MGContent.RENDERBLOCK_ENTITY);
+    public RenderBlockBlockEntity(BlockPos pos, BlockState state) {
+        super(MGContent.RENDERBLOCK_ENTITY, pos, state);
     }
 
     public static boolean blockAllowed(List<ItemStack> drops, List<ItemStack> filters, boolean isWhiteList) {
@@ -242,12 +242,12 @@ public class RenderBlockBlockEntity extends BlockEntity implements Tickable {
 
     @Override
     public BlockEntityUpdateS2CPacket toUpdatePacket() {
-        return new BlockEntityUpdateS2CPacket(pos, 0, toInitialChunkDataTag());
+        return new BlockEntityUpdateS2CPacket(pos, 0, toInitialChunkDataNbt());
     }
 
     @Override
-    public CompoundTag toInitialChunkDataTag() {
-        return toTag(new CompoundTag());
+    public NbtCompound toInitialChunkDataNbt() {
+        return writeNbt(new NbtCompound());
     }
 
     public void markDirtyClient() {
@@ -259,8 +259,8 @@ public class RenderBlockBlockEntity extends BlockEntity implements Tickable {
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
+    public void readNbt(NbtCompound tag) {
+        super.readNbt(tag);
         renderBlock = NbtHelper.toBlockState(tag.getCompound("renderBlock"));
         originalDurability = tag.getInt("originalDurability");
         priorDurability = tag.getInt("priorDurability");
@@ -275,7 +275,7 @@ public class RenderBlockBlockEntity extends BlockEntity implements Tickable {
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public NbtCompound writeNbt(NbtCompound tag) {
         if (renderBlock != null)
             tag.put("renderBlock", NbtHelper.fromBlockState(renderBlock));
         tag.putInt("originalDurability", originalDurability);
@@ -289,7 +289,7 @@ public class RenderBlockBlockEntity extends BlockEntity implements Tickable {
         tag.put("gadgetFilters", MiningProperties.serializeItemStackList(getGadgetFilters()));
         tag.putBoolean("gadgetIsWhitelist", isGadgetIsWhitelist());
         tag.putBoolean("blockAllowed", blockAllowed);
-        return super.toTag(tag);
+        return super.writeNbt(tag);
     }
 
     private void removeBlock() {
@@ -365,7 +365,7 @@ public class RenderBlockBlockEntity extends BlockEntity implements Tickable {
             SpecialBlockActions.getRegister().get(renderBlock.getBlock()).accept(world, pos, renderBlock);
     }
 
-    private void mgResetBlock() {
+    private void resetBlock() {
         if (world == null)
             return;
 
@@ -377,45 +377,62 @@ public class RenderBlockBlockEntity extends BlockEntity implements Tickable {
         }
     }
 
-    @Override
-    public void tick() {
-        totalAge++;
-
-        if (ticksSinceMine == 0) {
-            spawnParticle();
+    public static <T extends BlockEntity> void ticker(LevelInfo level, BlockPos blockPos, BlockState state, T tile) {
+        if (!(tile instanceof RenderBlockBlockEntity)) {
+            return;
         }
 
-        if (world.isClient) {
-            if (playerUUID != null) {
-                if (getPlayer() != null && !getPlayer().isUsingItem()) ticksSinceMine++;
-                else ticksSinceMine = 0;
+        RenderBlockBlockEntity entity = ((RenderBlockBlockEntity) tile);
+        entity.totalAge++;
+
+        //Client and server - spawn a 'block break' particle if the player is actively mining
+        if (entity.ticksSinceMine == 0) {
+            entity.spawnParticle();
+        }
+        //Client only
+        if (entity.world.isClient) {
+            //Update ticks since last mine on client side for particle renders
+            if (entity.playerUUID != null) {
+                if (entity.getPlayer() != null && !entity.getPlayer().isUsingItem()) {
+                    entity.ticksSinceMine++;
+                } else {
+                    entity.ticksSinceMine = 0;
+                }
             }
-
-            if (packetReceived) {
-                this.priorDurability = this.durability;
-                this.durability = this.clientDurability;
-
-                packetReceived = false;
+            //The packet with new durability arrives between ticks. Update it on tick.
+            if (entity.packetReceived) {
+                //System.out.println("PreChange: " + entity.durability + ":" + entity.priorDurability);
+                entity.priorDurability = entity.durability;
+                entity.durability = entity.clientDurability;
+                //System.out.println("PostChange: " + entity.durability + ":" + entity.priorDurability);
+                entity.packetReceived = false;
             } else {
-                if (durability != 0)
-                    this.priorDurability = this.durability;
-            }
-        }
+                if (entity.durability != 0) {
+                    entity.priorDurability = entity.durability;
+                }
 
-        if (!world.isClient) {
-            if (ticksSinceMine == 1) {
-                priorDurability = durability;
-//                ServerTickHandler.addToList(pos, durability, world);
             }
-            if (ticksSinceMine >= 10) {
-                priorDurability = durability;
-                durability++;
-//                ServerTickHandler.addToList(pos, durability, world);
+
+
+        }
+        //Server Only
+        if (!entity.world.isClient) {
+            if (entity.ticksSinceMine == 1) {
+                //Immediately after player stops mining, stability the shrinking effects and notify players
+                entity.priorDurability = entity.durability;
+//                ServerTickHandler.addToList(blockPos, entity.durability, level);
             }
-            if (durability >= originalDurability) {
-                mgResetBlock();
+            if (entity.ticksSinceMine >= 10) {
+                //After half a second, start 'regrowing' blocks that haven't been mined.
+                entity.priorDurability = entity.durability;
+                entity.durability++;
+//                ServerTickHandler.addToList(blockPos, entity.durability, level);
             }
-            ticksSinceMine++;
+            if (entity.durability >= entity.originalDurability) {
+                //Once we reach the original durability value set the block back to its original blockstate.
+                entity.resetBlock();
+            }
+            entity.ticksSinceMine++;
         }
     }
 

@@ -22,6 +22,6 @@ public class MiningGadgetsClient implements ClientModInitializer {
     }
 
     private static void registerRenderers() {
-        BlockEntityRendererRegistry.INSTANCE.register(MGContent.RENDERBLOCK_ENTITY, RenderBlockBER::new);
+//        BlockEntityRendererRegistry.INSTANCE.register(MGContent.RENDERBLOCK_ENTITY, RenderBlockBER);
     }
 }

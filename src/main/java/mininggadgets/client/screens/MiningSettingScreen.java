@@ -7,7 +7,7 @@ import mininggadgets.items.upgrade.Upgrade;
 import mininggadgets.items.upgrade.UpgradeTools;
 import mininggadgets.client.screens.widget.ToggleButton;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
@@ -46,7 +46,7 @@ public class MiningSettingScreen extends Screen {
 
     @Override
     protected void init() {
-        List<AbstractButtonWidget> leftWidgets = new ArrayList<>();
+        List<ClickableWidget> leftWidgets = new ArrayList<>();
 
         int baseX = width / 2, baseY = height / 2;
 

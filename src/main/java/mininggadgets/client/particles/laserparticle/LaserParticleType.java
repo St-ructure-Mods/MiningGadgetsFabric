@@ -9,7 +9,7 @@ public class LaserParticleType extends ParticleType<LaserParticleData> {
     }
 
     @Override
-    public Codec<LaserParticleData> method_29138() {
+    public Codec<LaserParticleData> getCodec() {
         return null;
     }
 }

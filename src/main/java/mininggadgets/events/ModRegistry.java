@@ -5,6 +5,7 @@ import mininggadgets.blockentities.RenderBlockBlockEntity;
 import mininggadgets.blocks.RenderBlock;
 import mininggadgets.init.MGContent;
 import mininggadgets.items.MiningGadget;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.Item;
@@ -28,7 +29,7 @@ public class ModRegistry {
     }
 
     private static void registerBlockEntities() {
-        MGContent.RENDERBLOCK_ENTITY = setup(BlockEntityType.Builder.create(RenderBlockBlockEntity::new, MGContent.RENDER_BLOCK).build(null), "renderblock");
+        MGContent.RENDERBLOCK_ENTITY = setup(FabricBlockEntityTypeBuilder.create(RenderBlockBlockEntity::new, MGContent.RENDER_BLOCK).build(null), "renderblock");
     }
 
     private static <I extends Item> I setup(I item, String name) {

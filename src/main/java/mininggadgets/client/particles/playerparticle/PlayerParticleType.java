@@ -16,7 +16,7 @@ public class PlayerParticleType extends ParticleType<PlayerParticleData> {
     }
 
     @Override
-    public Codec<PlayerParticleData> method_29138() {
+    public Codec<PlayerParticleData> getCodec() {
         return null;
     }
 

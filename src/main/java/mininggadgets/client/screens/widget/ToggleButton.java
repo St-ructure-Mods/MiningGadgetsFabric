@@ -3,7 +3,8 @@ package mininggadgets.client.screens.widget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
@@ -16,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class ToggleButton extends AbstractButtonWidget {
+public class ToggleButton extends ClickableWidget {
     private Predicate<Boolean> onPress;
     private boolean enabled;
     private Identifier texture;
@@ -35,15 +36,15 @@ public class ToggleButton extends AbstractButtonWidget {
         Color activeColor = this.enabled ? Color.GREEN : Color.RED;
 
         RenderSystem.enableBlend();
-        RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA.field_22545, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA.field_22528, GlStateManager.SrcFactor.ONE.field_22545, GlStateManager.DstFactor.ZERO.field_22528);
-        RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA.field_22545, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA.field_22528);
+        RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA.value, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA.value, GlStateManager.SrcFactor.ONE.value, GlStateManager.DstFactor.ZERO.value);
+        RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA.value, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA.value);
 
         RenderSystem.disableTexture();
-        RenderSystem.color4f(activeColor.getRed() / 255f, activeColor.getGreen() / 255f, activeColor.getBlue() / 255f, this.enabled ? .4f : .6f);
+        RenderSystem.clearColor(activeColor.getRed() / 255f, activeColor.getGreen() / 255f, activeColor.getBlue() / 255f, this.enabled ? .4f : .6f);
         drawTexture(stack, this.x, this.y, 0, 0, this.width, this.height);
         RenderSystem.enableTexture();
 
-        RenderSystem.color4f(1f, 1f, 1f, 1f);
+        RenderSystem.clearColor(1f, 1f, 1f, 1f);
         MinecraftClient.getInstance().getTextureManager().bindTexture(texture);
         drawTexture(stack, this.x + 2, this.y + 5, 0, 0, 16, 16, 16, 16);
     }
@@ -64,5 +65,9 @@ public class ToggleButton extends AbstractButtonWidget {
 
     public boolean isEnabled() {
         return enabled;
+    }
+
+    @Override
+    public void appendNarrations(NarrationMessageBuilder builder) {
     }
 }

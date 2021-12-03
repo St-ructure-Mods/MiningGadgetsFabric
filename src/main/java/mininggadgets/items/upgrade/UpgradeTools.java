@@ -6,8 +6,8 @@ import java.util.Optional;
 
 import mininggadgets.items.UpgradeCard;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
@@ -16,10 +16,10 @@ public class UpgradeTools {
     private static final String KEY_UPGRADE = "upgrade";
     private static final String KEY_ENABLED = "enabled";
 
-    private static void setUpgradeNBT(CompoundTag nbt, UpgradeCard upgrade) {
-        ListTag list = nbt.getList(KEY_UPGRADES, 1);
+    private static void setUpgradeNBT(NbtCompound nbt, UpgradeCard upgrade) {
+        NbtList list = nbt.getList(KEY_UPGRADES, 1);
 
-        CompoundTag compound = new CompoundTag();
+        NbtCompound compound = new NbtCompound();
         compound.putString(KEY_UPGRADE, upgrade.getUpgrade().getName());
         compound.putBoolean(KEY_ENABLED, upgrade.getUpgrade().isEnabled());
 
@@ -27,12 +27,12 @@ public class UpgradeTools {
         nbt.put(KEY_UPGRADES, list);
     }
 
-    public static CompoundTag setUpgradesNBT(List<Upgrade> laserUpgrades) {
-        CompoundTag listCompound = new CompoundTag();
-        ListTag list = new ListTag();
+    public static NbtCompound setUpgradesNBT(List<Upgrade> laserUpgrades) {
+        NbtCompound listCompound = new NbtCompound();
+        NbtList list = new NbtList();
 
         laserUpgrades.forEach(upgrade -> {
-            CompoundTag compound = new CompoundTag();
+            NbtCompound compound = new NbtCompound();
             compound.putString(KEY_UPGRADE, upgrade.getName());
             compound.putBoolean(KEY_ENABLED, upgrade.isEnabled());
             list.add(compound);
@@ -43,19 +43,19 @@ public class UpgradeTools {
     }
 
     public static void setUpgrade(ItemStack tool, UpgradeCard upgrade) {
-        CompoundTag tagCompound = tool.getOrCreateTag();
+        NbtCompound tagCompound = tool.getOrCreateNbt();
         setUpgradeNBT(tagCompound, upgrade);
     }
 
-    public static List<Upgrade> getUpgradesFromTag(CompoundTag tagCompound) {
-        ListTag upgrades = tagCompound.getList(KEY_UPGRADES, 1);
+    public static List<Upgrade> getUpgradesFromTag(NbtCompound tagCompound) {
+        NbtList upgrades = tagCompound.getList(KEY_UPGRADES, 1);
 
         List<Upgrade> functionalUpgrades = new ArrayList<>();
         if (upgrades.isEmpty())
             return functionalUpgrades;
 
         for (int i = 0; i < upgrades.size(); i++) {
-            CompoundTag tag = upgrades.getCompound(i);
+            NbtCompound tag = upgrades.getCompound(i);
 
             // Skip unknowns
             Upgrade type = getUpgradeByName(tag.getString(KEY_UPGRADE));
@@ -80,24 +80,24 @@ public class UpgradeTools {
     }
 
     public static List<Upgrade> getUpgrades(ItemStack tool) {
-        CompoundTag tagCompound = tool.getOrCreateTag();
+        NbtCompound tagCompound = tool.getOrCreateNbt();
         return getUpgradesFromTag(tagCompound);
     }
 
     public static List<Upgrade> getActiveUpgrades(ItemStack tool) {
-        CompoundTag tagCompound = tool.getOrCreateTag();
+        NbtCompound tagCompound = tool.getOrCreateNbt();
         return getActiveUpgradesFromTag(tagCompound);
     }
 
-     public static List<Upgrade> getActiveUpgradesFromTag(CompoundTag tagCompound) {
-        ListTag upgrades = tagCompound.getList(KEY_UPGRADES, 1);
+     public static List<Upgrade> getActiveUpgradesFromTag(NbtCompound tagCompound) {
+        NbtList upgrades = tagCompound.getList(KEY_UPGRADES, 1);
 
         List<Upgrade> functionalUpgrades = new ArrayList<>();
         if (upgrades.isEmpty())
             return functionalUpgrades;
 
         for (int i = 0; i < upgrades.size(); i++) {
-            CompoundTag tag = upgrades.getCompound(i);
+            NbtCompound tag = upgrades.getCompound(i);
 
             Upgrade type = getUpgradeByName(tag.getString(KEY_UPGRADE));
             if (type == null)

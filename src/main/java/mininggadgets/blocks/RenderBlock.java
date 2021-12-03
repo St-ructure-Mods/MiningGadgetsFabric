@@ -3,13 +3,13 @@ package mininggadgets.blocks;
 import mininggadgets.blockentities.RenderBlockBlockEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
+import org.jetbrains.annotations.Nullable;
 
 public class RenderBlock extends Block implements BlockEntityProvider {
     public RenderBlock() {
@@ -19,11 +19,6 @@ public class RenderBlock extends Block implements BlockEntityProvider {
                 .nonOpaque()
                 .dropsNothing()
         );
-    }
-
-    @Override
-    public BlockEntity createBlockEntity(BlockView world) {
-        return new RenderBlockBlockEntity();
     }
 
     @Override
@@ -50,5 +45,11 @@ public class RenderBlock extends Block implements BlockEntityProvider {
     @Override
     public boolean isSideInvisible(BlockState state, BlockState stateFrom, Direction direction) {
         return true;
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new RenderBlockBlockEntity(pos, state);
     }
 }

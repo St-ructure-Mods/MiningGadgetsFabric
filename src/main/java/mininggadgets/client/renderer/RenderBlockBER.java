@@ -23,19 +23,19 @@ import net.minecraft.util.math.MathHelper;
 import java.util.List;
 import java.util.Random;
 
-public class RenderBlockBER extends BlockEntityRenderer<RenderBlockBlockEntity> {
+public class RenderBlockBER implements BlockEntityRenderer<RenderBlockBlockEntity> {
 
     public RenderBlockBER(BlockEntityRenderDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
+
     }
 
     private void renderModelBrightnessColorQuads(MatrixStack.Entry matrixEntry, VertexConsumer builder, float red, float green, float blue, float alpha, List<BakedQuad> listQuads, int combinedLightsIn, int combinedOverlayIn) {
-        for (BakedQuad bakedquad  : listQuads) {
+        for (BakedQuad bakedquad : listQuads) {
             float f;
             float f1;
             float f2;
 
-            if (bakedquad .hasColor()) {
+            if (bakedquad.hasColor()) {
                 f = red * 1f;
                 f1 = green * 1f;
                 f2 = blue * 1f;
@@ -91,7 +91,7 @@ public class RenderBlockBER extends BlockEntityRenderer<RenderBlockBlockEntity> 
             scale = MathHelper.lerp(scale, 0.1f, 1.0f);
             for (Direction direction : Direction.values()) {
                 if (!(entity.getWorld().getBlockState(entity.getPos().offset(direction)).getBlock() instanceof RenderBlock)) {
-                    renderModelBrightnessColorQuads(matrixStackIn.peek(), vertexConsumers.getBuffer(MyRenderType.RenderBlock), f, f1, f2, scale, bakedModel.getQuads(renderState, direction, new Random(MathHelper.hashCode(entity.getPos()))), light, overlay);
+//                    renderModelBrightnessColorQuads(matrixStackIn.peek(), vertexConsumers.getBuffer(MyRenderType.RenderBlock), f, f1, f2, scale, bakedModel.getQuads(renderState, direction, new Random(MathHelper.hashCode(entity.getPos()))), light, overlay);
                 }
             }
         }

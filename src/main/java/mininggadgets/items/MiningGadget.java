@@ -56,24 +56,24 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import reborncore.common.powerSystem.PowerSystem;
+import reborncore.common.powerSystem.RcEnergyItem;
+import reborncore.common.powerSystem.RcEnergyTier;
 import reborncore.common.util.ItemDurabilityExtensions;
 import reborncore.common.util.ItemUtils;
-import team.reborn.energy.Energy;
-import team.reborn.energy.EnergyHandler;
-import team.reborn.energy.EnergyHolder;
-import team.reborn.energy.EnergySide;
-import team.reborn.energy.EnergyTier;
 
-public class MiningGadget extends Item implements EnergyHolder, ItemDurabilityExtensions {
+public class MiningGadget extends Item implements RcEnergyItem, ItemDurabilityExtensions {
     public final int maxCharge;
-    public final EnergyTier tier;
+    public final RcEnergyTier tier;
+    public final int cost;
+
     private Random rand = new Random();
     private LaserLoopSound laserLoopSound;
 
     public MiningGadget() {
         super(new Item.Settings().maxCount(1).group(MiningGadgets.ITEMGROUP));
         this.maxCharge = MGConfig.MININGGADGET_MAXPOWER;
-        this.tier = EnergyTier.HIGH;
+        this.tier = RcEnergyTier.MEDIUM;
+        this.cost = 10;
     }
 
     @Override
@@ -102,12 +102,12 @@ public class MiningGadget extends Item implements EnergyHolder, ItemDurabilityEx
     }
 
     @Override
-    public double getMaxStoredPower() {
+    public long getEnergyCapacity() {
         return maxCharge;
     }
 
     @Override
-    public EnergyTier getTier() {
+    public RcEnergyTier getTier() {
         return tier;
     }
 
@@ -118,21 +118,12 @@ public class MiningGadget extends Item implements EnergyHolder, ItemDurabilityEx
 
     @Override
     public boolean showDurability(ItemStack stack) {
-        if (stack.getItem() instanceof MiningGadget) {
-            return Energy.of(stack).getEnergy() > 0;
-        }
-
-        return false;
+        return true;
     }
 
     @Override
     public double getDurability(ItemStack stack) {
         return 1 - ItemUtils.getPowerForDurabilityBar(stack);
-    }
-
-    @Override
-    public double getMaxOutput(EnergySide side) {
-        return 0;
     }
 
     @Environment(EnvType.CLIENT)
@@ -159,14 +150,16 @@ public class MiningGadget extends Item implements EnergyHolder, ItemDurabilityEx
             }
         }
 
-        if (Energy.valid(stack)) {
-            int energy = (int) Energy.of(stack).getEnergy();
-            int maxEnergy = (int) Energy.of(stack).getMaxStored();
+        Item item = stack.getItem();
+
+        if (item instanceof RcEnergyItem energyItem) {
+            int energy = (int) energyItem.getStoredEnergy(stack);
+            int maxEnergy = (int) energyItem.getEnergyCapacity();
 
             tooltip.add(
-                new TranslatableText("mininggadgets.gadget.energy", 
-                    MagicHelpers.tidyValue(energy),
-                    MagicHelpers.tidyValue(maxEnergy)
+                new TranslatableText("mininggadgets.gadget.energy",
+                        MagicHelpers.tidyValue(energy),
+                        MagicHelpers.tidyValue(maxEnergy)
                 ).setStyle(Style.EMPTY.withColor(TextColor.parse("GREEN")))
             );
         }
@@ -181,13 +174,21 @@ public class MiningGadget extends Item implements EnergyHolder, ItemDurabilityEx
     }
 
     public static boolean canMine(ItemStack tool) {
-        EnergyHandler energy = Energy.of(tool);
+        Item item = tool.getItem();
+
         int cost = getEnergyCost(tool);
 
-        if (MiningProperties.getRange(tool) == 3)
-            cost = cost * 9;
+        if (item instanceof RcEnergyItem energyItem) {
+            energyItem.getStoredEnergy(tool);
 
-        return energy.getEnergy() > cost;
+            if (MiningProperties.getRange(tool) == 3) {
+                cost = cost * 9;
+            }
+
+            return energyItem.tryUseEnergy(tool, cost);
+        }
+
+        return false;
     }
 
     public static boolean canMineBlock(ItemStack tool, World world, PlayerEntity player, BlockPos pos, BlockState state) {

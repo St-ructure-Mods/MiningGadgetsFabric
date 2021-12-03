@@ -3,11 +3,15 @@ package mininggadgets.client.particles.laserparticle;
 import mininggadgets.blockentities.RenderBlockBlockEntity;
 import mininggadgets.items.upgrade.Upgrade;
 import mininggadgets.items.upgrade.UpgradeTools;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.OreBlock;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.particle.AbstractDustParticle;
+import net.minecraft.client.particle.BlockDustParticle;
 import net.minecraft.client.particle.BlockFallingDustParticle;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
@@ -15,7 +19,7 @@ import net.minecraft.world.World;
 
 import java.util.UUID;
 
-public class LaserParticle extends BlockFallingDustParticle {
+public class LaserParticle extends BlockDustParticle {
     // Queue values
     private float f;
     private float f1;
@@ -31,16 +35,17 @@ public class LaserParticle extends BlockFallingDustParticle {
     private int speedModifier;
     private boolean voiding = false;
 
-    public LaserParticle(World world, double d, double d1, double d2, double xSpeed, double ySpeed, double zSpeed,
+    public LaserParticle(World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed,
                          float size, float red, float green, float blue, boolean depthTest, float maxAgeMul, BlockState blockState) {
-        this(world, d, d1, d2, xSpeed, ySpeed, zSpeed, size, red, green, blue, depthTest, maxAgeMul);
+        this(world, x, y, z, xSpeed, ySpeed, zSpeed, size, red, green, blue, depthTest, blockState, maxAgeMul);
         this.blockState = blockState;
-        this.setSprite(MinecraftClient.getInstance().getBlockRenderManager().getModels().getSprite(blockState));
+        this.setSprite(MinecraftClient.getInstance().getBlockRenderManager().getModels().getModelParticleSprite(blockState));
     }
 
-    public LaserParticle(World world, double d, double d1, double d2, double xSpeed, double ySpeed, double zSpeed,
-                         float size, float red, float green, float blue, boolean depthTest, float maxAgeMul) {
-        super(world, d, d1, d2, ItemStack.EMPTY);
+    public LaserParticle(World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed,
+                         float size, float red, float green, float blue, boolean depthTest, BlockState blockState, float maxAgeMul) {
+        super((ClientWorld) world, x, y, z, xSpeed, ySpeed, zSpeed, blockState);
+
 
         // super applies wiggle to motion so set it here instead
         velocityX = xSpeed;
@@ -58,18 +63,18 @@ public class LaserParticle extends BlockFallingDustParticle {
 //        moteHalfLife = maxAge / 2;
         setBoundingBoxSpacing(0.001F, 0.001F);
 
-        prevPosX = x;
-        prevPosY = y;
-        prevPosZ = z;
+        prevPosX = this.x;
+        prevPosY = this.y;
+        prevPosZ = this.z;
 
         RenderBlockBlockEntity be = (RenderBlockBlockEntity) world.getBlockEntity(new BlockPos(this.x, this.y, this.z));
         if (be != null) {
             playerUUID = be.getPlayerUUID();
             voiding = (UpgradeTools.containsUpgradeFromList(be.getGadgetUpgrades(), Upgrade.VOID_JUNK) && !(be.getRenderBlock().getBlock() instanceof OreBlock));
         }
-        sourceX = d;
-        sourceY = d1;
-        sourceZ = d2;
+        sourceX = x;
+        sourceY = y;
+        sourceZ = z;
         this.collidesWithWorld = false;
     }
 

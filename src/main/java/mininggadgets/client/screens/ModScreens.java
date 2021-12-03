@@ -8,6 +8,6 @@ import net.minecraft.item.ItemStack;
 @Environment(EnvType.CLIENT)
 public class ModScreens {
     public static void openGadgetSettingsScreen(ItemStack itemStack) {
-        MinecraftClient.getInstance().openScreen(new MiningSettingScreen(itemStack));
+        MinecraftClient.getInstance().setScreen(new MiningSettingScreen(itemStack));
     }
 }
