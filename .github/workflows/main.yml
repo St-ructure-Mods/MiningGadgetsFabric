@@ -29,7 +29,7 @@ jobs:
         with:
             version-source: file
             version-file: gradle.properties
-            version-file-extraction-pattern: '(?<=version=).+'
+            version-file-extraction-pattern: '(?<=minecraft_version=).+'
       - name: make gradle wrapper executable
         if: ${{ runner.os != 'Windows' }}
         run: chmod +x ./gradlew
