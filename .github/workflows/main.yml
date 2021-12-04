@@ -24,15 +24,19 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java }}
+      - name: Generate versions
+        uses: HardNorth/github-version-generate@v1.1.1
+        with:
+            version-source: file
+            version-file: gradle.properties
+            version-file-extraction-pattern: '(?<=version=).+'
       - name: make gradle wrapper executable
         if: ${{ runner.os != 'Windows' }}
         run: chmod +x ./gradlew
       - name: build
         run: ./gradlew build
-      - name: Setting mod version
-        run: |
-          cat $GITHUB_WORKSPACE/gradle.properties | grep ^version= >> $GITHUB_ENV
-          cat $GITHUB_WORKSPACE/gradle.properties | grep ^minecraft_version= >> $GITHUB_ENV
+      - name: Version Numbers
+        run: echo "${{ env.CURRENT_VERSION }}"
       - name: Create package name
         run: echo "package_name=FabricMiningGadgets-$minecraft_version-$version-${{ github.head_ref || 'main' }}-SNAPSHOT-$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
       - name: capture build artifacts
