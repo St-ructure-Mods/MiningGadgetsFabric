@@ -38,7 +38,7 @@ jobs:
       - name: Version Numbers
         run: echo "${{ env.CURRENT_VERSION }}"
       - name: Create package name
-        run: echo "package_name=FabricMiningGadgets-$CURRENT_VERSION-${{ github.GITHUB_HEAD_REF || 'main' }}-SNAPSHOT-$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
+        run: echo "package_name=FabricMiningGadgets-$CURRENT_VERSION-${{ github.ref_name || 'main' }}-SNAPSHOT-$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
       - name: capture build artifacts
         if: ${{ runner.os == 'Linux' && matrix.java == '17' }} # Only upload artifacts built from latest java on one OS
         uses: actions/upload-artifact@v2
