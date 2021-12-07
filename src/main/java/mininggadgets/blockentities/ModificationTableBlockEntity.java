@@ -82,7 +82,7 @@ public class ModificationTableBlockEntity extends MachineBaseBlockEntity impleme
         return new ScreenHandlerBuilder("modification_table")
                 .player(player.getInventory()).inventory().hotbar().addInventory()
                 .blockEntity(this)
-                .slot(0, 65, 43)
+                .slot(0, 0, 0)
                 .addInventory().create(this, syncID);
     }
 }

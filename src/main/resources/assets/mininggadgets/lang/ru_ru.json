@@ -1,6 +1,6 @@
 {
   "block.mininggadgets.minerslight": "Шахтёрский свет",
-  "block.mininggadgets.modificationtable": "Стол модификаций",
+  "block.mininggadgets.modification_table": "Стол модификаций",
   "block.mininggadgets.renderblock": "Рэндэр блок (не использовать)",
   "block.mininggadgets.renderblock.name": "Всё, чем он хочет быть!",
   "item.mininggadgets.mininggadget": "Горный гаджет",

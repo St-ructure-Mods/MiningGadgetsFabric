@@ -24,7 +24,7 @@ public class GuiModificationTable extends GuiBase<BuiltScreenHandler> {
         super.drawBackground(matrixStack, lastFrameDuration, mouseX, mouseY);
 
         RenderSystem.setShaderTexture(0, background);
-        drawTexture(matrixStack, getGuiLeft(), getGuiTop(), 0, 0, this.backgroundWidth, 80);
+        drawTexture(matrixStack, getGuiLeft(), getGuiTop(), 0, 0, this.backgroundWidth, this.backgroundHeight);
     }
 
     @Override
