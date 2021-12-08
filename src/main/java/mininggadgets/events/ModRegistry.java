@@ -1,10 +1,8 @@
 package mininggadgets.events;
 
 import mininggadgets.MiningGadgets;
-import mininggadgets.blockentities.ModificationTableBlockEntity;
 import mininggadgets.blockentities.RenderBlockBlockEntity;
 import mininggadgets.blocks.MinersLight;
-import mininggadgets.blocks.ModificationTable;
 import mininggadgets.blocks.RenderBlock;
 import mininggadgets.init.MGContent;
 import mininggadgets.items.MiningGadget;
@@ -14,6 +12,9 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import reborncore.RebornRegistry;
+
+import java.util.Arrays;
 
 public class ModRegistry {
     
@@ -30,12 +31,14 @@ public class ModRegistry {
     private static void registerBlocks() {
         MGContent.RENDER_BLOCK = setup(new RenderBlock(), "renderblock");
         MGContent.MINERS_LIGHT = setup(new MinersLight(), "minerslight");
-        MGContent.MODIFICATION_TABLE_BLOCK = setup(new ModificationTable(), "modificationtableblock");
+
+        Item.Settings itemGroup = new Item.Settings().group(MiningGadgets.ITEMGROUP);
+
+        Arrays.stream(MGContent.Machine.values()).forEach(value -> RebornRegistry.registerBlock(value.block, itemGroup));
     }
 
     private static void registerBlockEntities() {
         MGContent.RENDERBLOCK_ENTITY = setup(FabricBlockEntityTypeBuilder.create(RenderBlockBlockEntity::new, MGContent.RENDER_BLOCK).build(null), "renderblock");
-        MGContent.MODIFICATIONTABLE_ENTITY = setup(FabricBlockEntityTypeBuilder.create(ModificationTableBlockEntity::new, MGContent.MODIFICATION_TABLE_BLOCK).build(null), "modificationtableblock");
     }
 
     private static <I extends Item> I setup(I item, String name) {
@@ -49,7 +52,7 @@ public class ModRegistry {
     }
 
     public static BlockEntityType<?> setup(BlockEntityType<?> blockEntity, String name) {
-        Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MiningGadgets.MOD_ID, "renderblock_tile"), blockEntity);
+        Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MiningGadgets.MOD_ID, name), blockEntity);
         return blockEntity;
     }
 }
